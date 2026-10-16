@@ -1,2 +1,159 @@
-# second-bot
-第二个 — 在 Android/Termux 上运行的 QQ 机器人（NapCat + 图形化面板），一键部署
+# <div align="center">
+
+# 第二个
+
+**在 Android 手机上跑 QQ 机器人，一条命令搞定。**
+
+`Termux` → `Debian (proot)` → `LinuxQQ + NapCat` → `手机图形面板`
+
+![platform](https://img.shields.io/badge/platform-Android%20%7C%20Termux-3fb950)
+![core](https://img.shields.io/badge/core-NapCat-58a6ff)
+![version](https://img.shields.io/badge/version-0.1.0-blue)
+![license](https://img.shields.io/badge/license-MIT-lightgrey)
+
+</div>
+
+---
+
+## 🤔 这是什么
+
+「第二个」是一个把 **QQ 机器人** 塞进 Android 手机的项目。
+
+它不自己实现 QQ 协议，而是用官方的 **NapCat**（基于 NTQQ 客户端）跑在一个 proot 容器里，
+再套一层 **手机图形面板**，让你不用碰命令行就能用。
+
+> 相比 icqq / 第三方协议的方案，NapCat 走的是官方客户端，**风控友好得多**。
+
+## ✨ 特性
+
+| 特性 | 说明 |
+|---|---|
+| 🚀 **一键部署** | 一条命令，从零到能登录 |
+| 📱 **图形面板** | 手机浏览器操作：启停 / 日志 / 二维码 / 状态 |
+| 📷 **二维码存相册** | 解决「同一个手机扫不了自己屏幕」的世纪难题 |
+| 🧩 **完整 OneBot v11** | 可对接 NoneBot / AstrBot / MaiBot 等框架 |
+| 📦 **不污染系统** | 全部装在 proot 容器，卸载 = 删一个目录 |
+| 🔧 **命令行兜底** | 面板崩了也能用 `second` 命令管理 |
+
+## 📋 环境要求
+
+- Android 手机，**arm64** 架构（arm32 不支持，官方无包）
+- 内存建议 **2GB+**（QQ + NapCat 比较吃内存）
+- 存储 **2GB+** 空闲
+- 已安装 [Termux](https://github.com/termux/termux-app/releases)（优先 `arm64-v8a`，**不要用 Google Play 版**）
+
+## 🚀 快速开始
+
+### 1. 安装
+
+在 Termux 中执行：
+
+```bash
+pkg install -y curl
+curl -fsSL https://raw.githubusercontent.com/qiuchen520/second-bot/main/install.sh | bash
+```
+
+> 🇨🇳 **国内网络**推荐用加速：
+> ```bash
+> curl -fsSL -o install.sh https://cdn.jsdelivr.net/gh/qiuchen520/second-bot@main/install.sh && bash install.sh
+> ```
+> 或在任意命令后加 `--gh-proxy https://ghproxy.net`。
+
+安装过程约 **10~30 分钟**，主要是下载 Debian 容器和 LinuxQQ。
+
+### 2. 启动 + 登录
+
+```bash
+second start      # 启动机器人
+second qr         # 把二维码保存到 /sdcard/Download/qrcode.png
+```
+
+然后用**手机 QQ**：`扫一扫` → 右上角 `相册` → 选择刚才那张二维码 → 确认登录 ✨
+
+### 3. 打开面板
+
+```bash
+second panel
+```
+
+浏览器访问 `http://127.0.0.1:8090`（同 WiFi 下其他设备可用 `http://手机IP:8090`）
+
+## 🎛 命令速查
+
+| 命令 | 作用 |
+|---|---|
+| `second start` | 后台启动机器人 |
+| `second stop` | 停止机器人 |
+| `second log` | 实时查看日志（Ctrl+C 退出） |
+| `second qr` | 保存登录二维码到相册 |
+| `second panel` | 启动图形面板 |
+| `second shell` | 进入容器内部 |
+| `second config` | 显示配置文件路径 |
+| `second status` | 查看运行状态 |
+
+## 📁 关键路径
+
+| 内容 | 路径 |
+|---|---|
+| NapCat 配置 | 容器内 `/root/Napcat/opt/QQ/resources/app/app_launcher/napcat/config/` |
+| NapCat WebUI | 容器内 `http://127.0.0.1:6099`（默认 token `napcat`） |
+| OneBot 端口 | 默认 WS `3001` / HTTP `3000` |
+| 运行日志 | `~/.second-bot/napcat.log` |
+| 面板文件 | `~/.second-bot/server.js` |
+
+## ❓ 常见问题
+
+<details>
+<summary><b>登录失败 / 提示风控怎么办？</b></summary>
+
+1. 换网络（WiFi ↔ 移动数据）后重试
+2. 等 1~3 小时冷却
+3. 换账号（新号、小号更容易过）
+4. 确保扫码时用的是**常用设备**的 QQ
+
+</details>
+
+<details>
+<summary><b>内存不够 / 被系统杀后台？</b></summary>
+
+- 在系统设置里给 Termux **关闭省电优化**、允许后台运行
+- 用 `second stop` 时不登录 QQ 就不会占内存
+- 建议配合 `termux-wake-lock` 保持唤醒
+
+</details>
+
+<details>
+<summary><b>怎么彻底卸载？</b></summary>
+
+```bash
+second stop
+proot-distro remove napcat   # 删容器（含 QQ 和 NapCat）
+rm -rf ~/.second-bot         # 删面板和日志
+rm -f $PREFIX/bin/second     # 删命令
+```
+
+</details>
+
+<details>
+<summary><b>会封号吗？</b></summary>
+
+NapCat 走官方 NTQQ 客户端协议，风险相对较低，但**任何非官方客户端登录都存在风险**。
+请不要用于批量加好友、群发广告等违规行为，后果自负。
+
+</details>
+
+## ⚠️ 免责声明
+
+本项目仅用于学习与技术研究。使用过程中产生的一切后果由使用者自行承担。
+QQ 是腾讯公司的商标，本项目与腾讯无任何关联。
+
+## 🙏 致谢
+
+- [NapCat](https://github.com/NapNeko/NapCatQQ) —— 核心协议端，没有它就没有这个项目
+- [NapCat-Installer](https://github.com/NapNeko/NapCat-Installer) —— 安装脚本参考
+- [proot-distro](https://github.com/termux/proot-distro) —— 容器方案
+- [Termux](https://github.com/termux/termux-app) —— Android 上的 Linux
+
+## 📄 License
+
+MIT
