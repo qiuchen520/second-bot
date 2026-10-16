@@ -1,17 +1,17 @@
 // ============================================================================
-//  第二个 · 手机图形面板
-//  运行: SECOND_ALIAS=napcat node server.js    然后浏览器打开 http://127.0.0.1:8090
+//  QBot · 手机图形面板
+//  运行: QBOT_ALIAS=napcat node server.js   然后浏览器打开 http://127.0.0.1:8090
 // ============================================================================
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { execFile } = require('child_process');
 
-const PORT = Number(process.env.SECOND_PORT || 8090);
-const ALIAS = process.env.SECOND_ALIAS || 'napcat';
-const SESS = process.env.SECOND_SESSION || 'second-napcat';
+const PORT = Number(process.env.QBOT_PORT || process.env.SECOND_PORT || 8090);
+const ALIAS = process.env.QBOT_ALIAS || process.env.SECOND_ALIAS || 'napcat';
+const SESS = process.env.QBOT_SESSION || 'qbot-napcat';
 const HOME_DIR = process.env.HOME || '/data/data/com.termux/files/home';
-const DIR = path.join(HOME_DIR, '.second-bot');
+const DIR = path.join(HOME_DIR, '.qbot');
 const LOG = path.join(DIR, 'napcat.log');
 const PREFIX = process.env.PREFIX || '/data/data/com.termux/files/usr';
 const ROOTFS = path.join(PREFIX, 'var/lib/proot-distro/installed-rootfs', ALIAS);
@@ -35,12 +35,15 @@ async function isRunning() {
 function tailLog(n) {
   try {
     const s = fs.readFileSync(LOG, 'utf8');
-    const lines = s.split('\n');
-    return lines.slice(-n).join('\n').trim();
+    return s.split('\n').slice(-n).join('\n').trim();
   } catch (e) { return ''; }
 }
 
-// 递归找 qrcode.png（限制深度，避免全盘扫描）
+function countLines() {
+  try { return fs.readFileSync(LOG, 'utf8').split('\n').length; } catch (e) { return 0; }
+}
+
+// 递归找 qrcode.png（限制深度，避免全盘扫描拖慢手机）
 function findQr(dir, depth) {
   depth = depth || 0;
   if (depth > 8) return null;
@@ -107,7 +110,7 @@ const server = http.createServer(async function (req, res) {
       alias: ALIAS,
       hasQr: !!qr,
       log: tailLog(200),
-      logLines: (tailLog(99999).match(/\n/g) || []).length + 1
+      logLines: countLines()
     });
   }
 
@@ -137,9 +140,9 @@ const PAGE = `<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0e1116">
-<title>第二个</title>
+<title>QBot</title>
 <style>
-:root{--bg:#0e1116;--card:#161b22;--line:#232b36;--fg:#e6edf3;--dim:#8b949e;--ok:#3fb950;--bad:#f85149;--acc:#58a6ff}
+:root{--bg:#0e1116;--card:#161b22;--line:#232b36;--fg:#e6edf3;--dim:#8b949e;--ok:#3fb950;--bad:#f85149}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,system-ui,"PingFang SC","Noto Sans CJK SC",sans-serif;padding:18px 14px 40px}
 h1{font-size:21px;margin:0;letter-spacing:1px}
@@ -160,7 +163,7 @@ img.qr{width:100%;max-width:280px;display:block;margin:0 auto;background:#fff;bo
 </style>
 </head>
 <body>
-<h1>第二个</h1>
+<h1>QBot</h1>
 <div class="sub">QQ Bot on Android · 图形面板</div>
 
 <div class="card">
@@ -216,7 +219,7 @@ refresh();setInterval(refresh,3000);
 </html>`;
 
 server.listen(PORT, '0.0.0.0', function () {
-  console.log('第二个 · 面板已启动');
+  console.log('QBot · 面板已启动');
   console.log('  本机: http://127.0.0.1:' + PORT);
   console.log('  容器: ' + ALIAS);
 });
