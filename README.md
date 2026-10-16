@@ -1,167 +1,63 @@
-# <div align="center">
+# QBot（已归档）
 
-# QBot
-
-**在 Android 手机上跑 QQ 机器人，一条命令搞定。**
-
-`Termux` → `Debian (proot)` → `LinuxQQ + NapCat` → `手机图形面板`
-
-![platform](https://img.shields.io/badge/platform-Android%20%7C%20Termux-3fb950)
-![core](https://img.shields.io/badge/core-NapCat-58a6ff)
-![version](https://img.shields.io/badge/version-0.1.0-blue)
-![license](https://img.shields.io/badge/license-MIT-lightgrey)
-
-</div>
+> ⚠️ **本项目已停止开发，仓库已归档（只读）。**
+>
+> 原因很简单：社区已经有成熟方案，覆盖了本项目**全部**规划的功能，而且实现得更好。
+> 与其造一个更差的轮子，不如直接推荐它。
 
 ---
 
-## 🤔 这是什么
+## 👉 请改用这些项目
 
-QBot 把 **QQ 机器人** 塞进 Android 手机。
-
-它不自己实现 QQ 协议，而是用官方的 **NapCat**（基于 NTQQ 客户端）跑在 proot 容器里，
-再套一层 **手机图形面板**，让你不用碰命令行。
-
-> 相比 icqq / 第三方协议，NapCat 走的是官方客户端，**风控友好得多**。
-
-## ✨ 特性
-
-| 特性 | 说明 |
+| 项目 | 说明 |
 |---|---|
-| 🚀 **一键部署** | 一条命令，从零到能登录 |
-| 📱 **图形面板** | 手机浏览器操作：启停 / 日志 / 二维码 / 状态 |
-| 📷 **二维码存相册** | 解决「同一个手机扫不了自己屏幕」的世纪难题 |
-| 💿 **QQ 可离线装** | 支持本地 `.deb`，网络差也能装 |
-| 🧩 **完整 OneBot v11** | 可对接 NoneBot / AstrBot / mioki 等框架 |
-| 📦 **不污染系统** | 全部装在 proot 容器，卸载 = 删一个目录 |
+| **[zz6zz666/AstrBot-Android-App](https://github.com/zz6zz666/AstrBot-Android-App)** ⭐346 | 把 **AstrBot + NapCatQQ + Ubuntu 容器**打包成一个 APK，装完即用，无需命令行 |
+| [zz6zz666/Android-DIY-Sandbox](https://github.com/zz6zz666/Android-DIY-Sandbox) | 作者的新一代沙箱 App（现在的主力项目） |
+| [zz6zz666/AstrBot-android-lua](https://github.com/zz6zz666/AstrBot-android-lua) | 配套的 AstrBot 皮肤包（在 Sandbox 里载入 zip） |
+| [fii6/astrbot_termux](https://github.com/fii6/astrbot_termux) | 如果你喜欢 Termux 命令行方案 |
 
-## 📋 环境要求
+---
 
-- Android 手机，**arm64** 架构（arm32 不支持，官方无包）
-- 内存建议 **3GB+**（QQ + NapCat 比较吃内存）
-- 存储 **2GB+** 空闲
-- 已安装 [Termux](https://github.com/termux/termux-app/releases)（优先 `arm64-v8a`，**不要用 Google Play 版**）
+## 📦 这里留下了什么
 
-## 🚀 快速开始
+虽然项目停了，但里面几个文件单独拿出来仍能用，欢迎自取：
 
-### 1. 安装
-
-```bash
-pkg install -y curl
-curl -fsSL -o install.sh https://cdn.jsdelivr.net/gh/qiuchen520/second-bot@main/install.sh
-bash install.sh
-```
-
-网络不通就用这条（GitHub 加速）：
-
-```bash
-curl -fL -o install.sh https://ghproxy.net/https://raw.githubusercontent.com/qiuchen520/second-bot/main/install.sh && bash install.sh
-```
-
-### 2. 可选：用本地 QQ 安装包（推荐，快很多）
-
-```bash
-# arm64 手机用这个
-curl -fL -o QQ.deb https://qqdl.gtimg.cn/qqfile/QQNT/9.9.36/beta/9ee04bef/linuxqq_3.2.34-53644_arm64.deb
-bash install.sh --qq-deb ./QQ.deb
-```
-
-> 也可以把 `QQ.deb` 直接放到当前目录，脚本会自动发现。
-
-### 3. 启动 + 登录
-
-```bash
-qbot start      # 启动机器人
-qbot qr         # 把二维码保存到 /sdcard/Download/qrcode.png
-```
-
-然后用**手机 QQ**：`扫一扫` → 右上角 `相册` → 选择那张二维码 → 确认登录 ✨
-
-### 4. 打开面板
-
-```bash
-qbot panel
-```
-
-浏览器访问 `http://127.0.0.1:8090`
-
-## 🎛 命令速查
-
-| 命令 | 作用 |
+| 文件 | 说明 |
 |---|---|
-| `qbot start` | 后台启动机器人 |
-| `qbot stop` | 停止机器人 |
-| `qbot log` | 实时查看日志 |
-| `qbot qr` | 保存登录二维码到相册 |
-| `qbot panel` | 启动图形面板 |
-| `qbot shell` | 进入容器内部 |
-| `qbot config` | 显示配置路径与端口 |
-| `qbot status` | 查看运行状态 |
+| `install.sh` | Termux 一键部署 NapCat：proot 容器 + 清华源 + 支持本地 QQ 安装包 |
+| `scripts/qbot.sh` | Termux 下的命令行工具：启停 / 日志 / 二维码存相册 / 进容器 |
+| `panel/server.js` | 手机 Web 控制面板（深色 UI，含「二维码存相册」功能） |
+| `android/` | 原生 APK 骨架 + GitHub Actions 云编译流水线（可直接作为模板） |
 
-## 📁 关键路径
+### 其中比较有意思的一个点：二维码存相册
 
-| 内容 | 路径 |
-|---|---|
-| NapCat 配置 | 容器内 `/root/Napcat/opt/QQ/resources/app/app_launcher/napcat/config/` |
-| NapCat WebUI | 容器内 `http://127.0.0.1:6099`（默认 token `napcat`） |
-| OneBot 端口 | 默认 WS `3001` / HTTP `3000` |
-| 运行日志 | `~/.qbot/napcat.log` |
-| 面板文件 | `~/.qbot/server.js` |
+同一个手机没法扫自己屏幕上的二维码。这里的做法是：
 
-## 🧩 生态搭配
-
-QBot 只管「把 NapCat 跑起来 + 管好它」。机器人逻辑可以交给任何 OneBot v11 框架：
-
-- [mioki](https://github.com/vikiboss/mioki) —— KiviBot 精神继任者，TS 编写
-- [NoneBot2](https://github.com/nonebot/nonebot2) —— Python 生态最全
-- [AstrBot](https://github.com/AstrBotDevs/AstrBot) —— 带 LLM 的 Bot 框架
-
-> 架构：`NapCat（QBot 负责）` → `OneBot v11` → `你的机器人框架`
-
-## ❓ 常见问题
-
-<details>
-<summary><b>登录失败 / 提示风控怎么办？</b></summary>
-
-1. 换网络（WiFi ↔ 移动数据）后重试
-2. 等 1~3 小时冷却
-3. 换账号（新号、小号更容易过）
-4. 建议用常用设备登录过的账号
-
-</details>
-
-<details>
-<summary><b>内存不够 / 被系统杀后台？</b></summary>
-
-- 系统设置里给 Termux **关闭省电优化**、允许后台运行
-- 执行 `termux-wake-lock` 保持唤醒
-- 不登录时用 `qbot stop` 释放内存
-
-</details>
-
-<details>
-<summary><b>怎么彻底卸载？</b></summary>
-
-```bash
-qbot stop
-proot-distro remove napcat   # 删容器（含 QQ 和 NapCat）
-rm -rf ~/.qbot               # 删面板和日志
-rm -f $PREFIX/bin/qbot       # 删命令
+```
+检测容器内 NapCat 的 qrcode.png
+  → 复制到 /sdcard/Download/qrcode.png
+  → 手机 QQ「扫一扫 → 相册」选图 → 同机登录 ✅
 ```
 
-</details>
+---
 
-## ⚠️ 免责声明
+## 🧠 技术路线（供参考）
 
-本项目仅用于学习与技术研究，使用过程中的一切后果由使用者承担。
-QQ 是腾讯公司的商标，本项目与腾讯无任何关联。
+```
+Termux / APK
+  └─ proot ──▶ Debian / Ubuntu 容器
+       ├── LinuxQQ + NapCat      → OneBot v11 (:3001)
+       └── AstrBot (Python 3.12) → WebUI (:6185)
+```
+
+APK 方案的关键点：**不要把 QQ 安装包放进仓库**（法律风险），
+而是 App 启动后多源测速下载；同时需要把 **静态 proot 二进制**打包进 APK。
+
+---
 
 ## 🙏 致谢
 
-- [NapCat](https://github.com/NapNeko/NapCatQQ) —— 核心协议端
-- [NapCat-Installer](https://github.com/NapNeko/NapCat-Installer) —— 安装脚本参考
-- [proot-distro](https://github.com/termux/proot-distro) —— 容器方案
-- [Termux](https://github.com/termux/termux-app) —— Android 上的 Linux
+- [AstrBot](https://github.com/AstrBotDevs/AstrBot) · [NapCat](https://github.com/NapNeko/NapCatQQ) · [NapCat-Installer](https://github.com/NapNeko/NapCat-Installer) · [Termux](https://github.com/termux/termux-app) · [proot-distro](https://github.com/termux/proot-distro)
 
 ## 📄 License
 
